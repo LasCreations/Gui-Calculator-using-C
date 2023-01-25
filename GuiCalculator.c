@@ -174,7 +174,7 @@ static void activate(GtkApplication *app, gpointer user_data){
 	widget.button[12] = gtk_button_new_with_label("-");
 	widget.button[13] = gtk_button_new_with_label("x");
 	widget.button[14] = gtk_button_new_with_label("÷");
-	widget.button[15] = gtk_button_new_with_label("ON/CLR");
+	widget.button[15] = gtk_button_new_with_label("C");
 	widget.button[16] = gtk_button_new_with_label("=");	
 	widget.button[17] = gtk_button_new_with_label("SHIFT");
 	widget.button[18] = gtk_button_new_with_label("ALPHA");
