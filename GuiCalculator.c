@@ -1,9 +1,13 @@
 //Creating a scientific calculator
+
+
 #include<gtk/gtk.h>
 
 #include<stdlib.h>
 #include<string.h>
 #include<stdbool.h>
+
+#include <math.h>
 
 typedef struct{
 	GtkWidget *window;
