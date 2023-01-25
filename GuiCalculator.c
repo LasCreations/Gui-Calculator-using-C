@@ -1,4 +1,4 @@
-//Test
+//Creating a scientific calculator
 #include<gtk/gtk.h>
 
 #include<stdlib.h>
