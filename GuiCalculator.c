@@ -1,6 +1,7 @@
 //Creating a scientific calculator
 #include "Calculations.h"
 #include<gtk/gtk.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct{
@@ -34,16 +35,36 @@ static void GetInput(GtkButton *button, gpointer data){
 	else if(strcmp("=",text)==0){
 	
 	}
-
 	else{
-		if(buffer==NULL){
-			buffer = (char *) malloc (strlen(text));
-			strcpy (buffer, text);
+		if(strcmp("DEL", text)==0){
+			//Create a new Pointer
+			char *newPtr = NULL;
+			newPtr = (char *) malloc (strlen(buffer));
+			strncpy(newPtr,buffer,strlen(buffer));
+			//g_print("%s", newPtr);
+			
+			free(buffer);
+			buffer = NULL;
+
+			buffer = (char *) malloc((strlen(newPtr)-1));
+			strncpy(buffer,newPtr,strlen(newPtr) - 1);
+			g_print("%s\n", buffer);
+			
+			free(newPtr);
+			newPtr = NULL;
+
+			gtk_entry_set_text(GTK_ENTRY(box), buffer);
 		}else{
-			buffer = (char *) realloc (buffer, ((strlen(buffer)) + (strlen(text)))); //buffer is reallocated with new size
-			strcat(buffer, text);
+			if(buffer==NULL){
+				buffer = (char *) malloc (strlen(text));
+				strcpy (buffer, text);
+			}else{
+				buffer = (char *) realloc (buffer, ((strlen(buffer)) + (strlen(text)))); //buffer is reallocated with new size
+				strcat(buffer, text);
+			}
+			gtk_entry_set_text(GTK_ENTRY(box), buffer);
+
 		}
-		gtk_entry_set_text(GTK_ENTRY(box), buffer);
 	}
 }
 
