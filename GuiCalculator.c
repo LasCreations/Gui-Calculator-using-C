@@ -1,9 +1,13 @@
 //Creating a scientific calculator
-#include "Calculations.h"
 
-//GUI Library
+#include<math.h> 
+#include<stddef.h>
+#include<stdint.h> 
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+#include<stdbool.h>
 #include<gtk/gtk.h>
-
 
 typedef struct{
 	GtkWidget *window;
@@ -13,14 +17,61 @@ typedef struct{
 	
 }calc;
 
+
+bool Is_Shift_Clicked = false;
+
 GtkWidget *box;
 
 char *buffer = NULL;
 
+
+//Return a string or pointer
+static void SplitEquation(char *equation){
+	//g_print("%s\n",equation);
+		
+
+
+
+	for(size_t i=0;i<strlen(equation);i++){
+		
+		if(isdigit(equation[i])){
+			
+		}
+		else if(isalpha(equation[i])){
+			
+		}
+	}
+}
+
+/*
+ GDK_BUTTON_PRESS
+
+GDK_BUTTON_RELEASE
+
+GDK_BUTTON_PRESS
+
+GDK_2BUTTON_PRESS
+
+GDK_BUTTON_RELEASE
+
+*/
+
+gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
+	
+	if(event->type == GDK_BUTTON_PRESS)
+		printf("Pressed\n");
+	
+	return TRUE;
+}
+
+static void ShiftClicked(GtkButton *button, gpointer data){
+	Is_Shift_Clicked = true;
+}
+
 static void GetInput(GtkButton *button, gpointer data){
+	
 
 	const gchar* text = gtk_button_get_label(button);
-
 
 	/*Dynamically allocating the memory for the string
 	First We get allocate the size of the buffer by using the size of the
@@ -36,7 +87,7 @@ static void GetInput(GtkButton *button, gpointer data){
 		gtk_entry_set_text(GTK_ENTRY(box), " ");
 	}
 	else if(strcmp("=",text)==0){
-		GetCalculations(text);	
+		SplitEquation(buffer);
 	}
 	else{
 		if(strcmp("DEL", text)==0){
@@ -209,7 +260,11 @@ static void activate(GtkApplication *app, gpointer user_data){
 	
 	
 	//Each button onclick will go the getinput function
+
+
 	
+	g_signal_connect(widget.button[17], "button-press-event", G_CALLBACK(clicked), NULL);
+
 	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[2],"clicked",G_CALLBACK(GetInput), NULL);
