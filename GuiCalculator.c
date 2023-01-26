@@ -1,13 +1,16 @@
 //Creating a scientific calculator
 #include "Calculations.h"
+
+//GUI Library
 #include<gtk/gtk.h>
-#include <stdlib.h>
-#include <string.h>
+
 
 typedef struct{
 	GtkWidget *window;
 	GtkWidget *grid;
 	GtkWidget *button[45];
+	//GtkWidget *ShiftLabel[];
+	
 }calc;
 
 GtkWidget *box;
@@ -33,28 +36,14 @@ static void GetInput(GtkButton *button, gpointer data){
 		gtk_entry_set_text(GTK_ENTRY(box), " ");
 	}
 	else if(strcmp("=",text)==0){
-	
+		GetCalculations(text);	
 	}
 	else{
 		if(strcmp("DEL", text)==0){
-			//Create a new Pointer
-			char *newPtr = NULL;
-			newPtr = (char *) malloc (strlen(buffer));
-			strncpy(newPtr,buffer,strlen(buffer));
-			//g_print("%s", newPtr);
-			
-			free(buffer);
-			buffer = NULL;
-
-			buffer = (char *) malloc((strlen(newPtr)-1));
-			strncpy(buffer,newPtr,strlen(newPtr) - 1);
-			g_print("%s\n", buffer);
-			
-			free(newPtr);
-			newPtr = NULL;
-
+			buffer[strlen(buffer)-1] = '\0';
 			gtk_entry_set_text(GTK_ENTRY(box), buffer);
-		}else{
+		}
+		else{
 			if(buffer==NULL){
 				buffer = (char *) malloc (strlen(text));
 				strcpy (buffer, text);
