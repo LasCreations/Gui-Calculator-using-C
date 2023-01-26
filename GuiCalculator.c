@@ -1,13 +1,7 @@
 //Creating a scientific calculator
-
-
+#include "Calculations.h"
 #include<gtk/gtk.h>
-
-#include<stdlib.h>
-#include<string.h>
-#include<stdbool.h>
-
-#include <math.h>
+#include <string.h>
 
 typedef struct{
 	GtkWidget *window;
@@ -17,117 +11,41 @@ typedef struct{
 
 GtkWidget *box;
 
-#define SIZE 10
+char *buffer = NULL;
 
-char input_buffer[100] = {0};
-char output_buffer[100] = {0};
-
-bool clear_buffer = false;
-bool add=false;
-bool mul = false;
-bool divv = false;
-bool sub = false;
-
-float result = 0.0;
-static float num[SIZE];
-int count = 0;
-
-static void calculate(GtkButton *button, gpointer data){
-
-	const gchar* text = gtk_button_get_label(button);
-
-	if( (strcmp("+", text)==0) ||   (strcmp("-", text)==0) ||  (strcmp("/", text)==0) ||  (strcmp("x", text)==0) ||  (strcmp("=", text)==0) ){
-		
-		num[count] = atof(input_buffer);
-		count++;
-		clear_buffer = true;
-
-		if(strcmp("+",text)==0){
-			add = true;
-		}
-		if(strcmp("-",text)==0){
-			sub = true;
-		}
-		if(strcmp("/",text)==0){
-			divv = true;
-		}
-		if(strcmp("x",text)==0){
-			mul = true;
-		}
-	}
-
-	if(strcmp("=",text)==0){
-		int x = sizeof(num)/sizeof(num[0]);
-		
-		if(add){
-			for(int i=0; i<x; i++){
-				result += num[i];
-			}
-		}
-
-		if(divv){
-			result = num[0]/num[1];
-		}
-
-		if(sub){
-				if(result == 0.0){
-					result = num[0]*2;
-				}
-			for(int i=0; i<x; i++){
-				result -= num[i];
-			}
-		}
+static void OutputScreen(const gchar* input){
 	
-		if(mul){
-			result = num[0]*num[1];
-		}
-
-		add = false;
-		mul = false;
-		divv = false;
-		sub = false;
-		
-		gtk_entry_set_text(GTK_ENTRY(box), "");
-		sprintf(output_buffer, "%.3f", result);
-		gtk_entry_set_text(GTK_ENTRY(box), output_buffer);
-		result = 0.0;
-	}
-	else{
-		if(clear_buffer){
-			memset(input_buffer,0,strlen(input_buffer));
-			clear_buffer = false;
+	/*Dynamically allocating the memory for the string
+	First We get allocate the size of the buffer by using the size of the
+	text of the button that was entered and the allocate it if the buffer is empty
+	If the buffer is not empty then we reallocate space to the memory of the buffer by adding the 
+	current size of the buffer to the current size of the preceeding text.
+	If C is pressed the we free the memory and then set the buffer back to NULL
+	and output an empty screen*/
+	
+	if(strcmp("C",input)==0){
+		free(buffer);
+		buffer = NULL;
+		gtk_entry_set_text(GTK_ENTRY(box), " ");
+	}else{
+		if(buffer==NULL){
+			buffer = (char *) malloc (strlen(input));
+			strcpy (buffer, input);
 		}else{
-			strncat(input_buffer,text, 1);
+			buffer = (char *) realloc (buffer, ((strlen(buffer)) + (strlen(input)))); //buffer is reallocated with new size
+			strcat(buffer, input);
 		}
-		
-			strncat(output_buffer,text, 1);
-			gtk_entry_set_text(GTK_ENTRY(box), output_buffer);
-	}
-		
-	if(strcmp("C",text)==0){
-		gtk_entry_set_text(GTK_ENTRY(box), "");
-		memset(input_buffer,0,strlen(input_buffer));
-		memset(output_buffer,0,strlen(output_buffer));
-
-		count = 0;
-		int x = sizeof(num)/sizeof(num[0]);
-		
-		for(int i=0; i<x; i++){
-				num[i] = 0;
-		}
-
-		add = false;
-		mul = false;
-		divv = false;
-		sub = false;
+		gtk_entry_set_text(GTK_ENTRY(box), buffer);
 	}
 }
 
-
-
-
+static void GetInput(GtkButton *button, gpointer data){
+	const gchar* text = gtk_button_get_label(button);
+	OutputScreen(text);
+}
 
 static void activate(GtkApplication *app, gpointer user_data){
+	
 	calc widget;
 
 	widget.window = gtk_application_window_new(app);
@@ -141,7 +59,6 @@ static void activate(GtkApplication *app, gpointer user_data){
 
 	box = gtk_entry_new();
 	gtk_editable_set_editable(GTK_EDITABLE(box), FALSE);
-
 
 	/*
 	⁰ ¹ ² ³ ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ ⁺ ⁻ ⁼ ⁽ ⁾  
@@ -274,40 +191,65 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[45],2,9,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[44],3,9,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[16],4,9,1,1);	
-
-	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[2],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[3],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[4],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[5],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[6],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[7],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[8],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[9],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[10],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[11],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[12],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[13],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[14],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[15],"clicked",G_CALLBACK(calculate), NULL);
-	g_signal_connect(widget.button[16],"clicked",G_CALLBACK(calculate), NULL);
-
+	
+	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[2],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[3],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[4],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[5],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[6],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[7],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[8],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[9],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[10],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[11],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[12],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[13],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[14],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[15],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[16],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[17],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[18],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[19],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[20],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[21],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[22],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[23],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[24],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[25],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[26],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[27],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[28],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[29],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[30],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[31],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[32],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[33],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[34],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[35],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[36],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[37],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[38],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[39],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[40],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[41],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[42],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[43],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[44],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[45],"clicked",G_CALLBACK(GetInput), NULL);
+		
 	gtk_widget_show_all(widget.window);
 }
 
 
 int main(int argc, char **argv){
 	GtkApplication *app;
-
 	gtk_init(&argc, &argv);
-
 	int status;
 	app = gtk_application_new("org.gtk.calculator", G_APPLICATION_DEFAULT_FLAGS);
-
 	g_signal_connect(app,"activate", G_CALLBACK(activate), NULL);
 	status = g_application_run(G_APPLICATION(app), argc, argv);
 	g_object_unref(app);
-
-return status;
+	return status;
 }
