@@ -13,8 +13,11 @@ GtkWidget *box;
 
 char *buffer = NULL;
 
-static void OutputScreen(const gchar* input){
-	
+static void GetInput(GtkButton *button, gpointer data){
+
+	const gchar* text = gtk_button_get_label(button);
+
+
 	/*Dynamically allocating the memory for the string
 	First We get allocate the size of the buffer by using the size of the
 	text of the button that was entered and the allocate it if the buffer is empty
@@ -23,25 +26,25 @@ static void OutputScreen(const gchar* input){
 	If C is pressed the we free the memory and then set the buffer back to NULL
 	and output an empty screen*/
 	
-	if(strcmp("C",input)==0){
+	if(strcmp("C",text)==0){
 		free(buffer);
 		buffer = NULL;
 		gtk_entry_set_text(GTK_ENTRY(box), " ");
-	}else{
+	}
+	else if(strcmp("=",text)==0){
+	
+	}
+
+	else{
 		if(buffer==NULL){
-			buffer = (char *) malloc (strlen(input));
-			strcpy (buffer, input);
+			buffer = (char *) malloc (strlen(text));
+			strcpy (buffer, text);
 		}else{
-			buffer = (char *) realloc (buffer, ((strlen(buffer)) + (strlen(input)))); //buffer is reallocated with new size
-			strcat(buffer, input);
+			buffer = (char *) realloc (buffer, ((strlen(buffer)) + (strlen(text)))); //buffer is reallocated with new size
+			strcat(buffer, text);
 		}
 		gtk_entry_set_text(GTK_ENTRY(box), buffer);
 	}
-}
-
-static void GetInput(GtkButton *button, gpointer data){
-	const gchar* text = gtk_button_get_label(button);
-	OutputScreen(text);
 }
 
 static void activate(GtkApplication *app, gpointer user_data){
@@ -76,6 +79,8 @@ static void activate(GtkApplication *app, gpointer user_data){
 
 	*/
 
+	//Add text to the buttons and attach them to the grid
+	
 	widget.button[0] = gtk_button_new_with_label("0");
 	widget.button[1] = gtk_button_new_with_label("1");
 	widget.button[2] = gtk_button_new_with_label("2");
@@ -191,6 +196,9 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[45],2,9,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[44],3,9,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[16],4,9,1,1);	
+	
+	
+	//Each button onclick will go the getinput function
 	
 	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(GetInput), NULL);
