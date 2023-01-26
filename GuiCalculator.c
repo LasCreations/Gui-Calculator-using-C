@@ -81,7 +81,7 @@ static void GetInput(GtkButton *button, gpointer data){
 	If C is pressed the we free the memory and then set the buffer back to NULL
 	and output an empty screen*/
 	
-	if(strcmp("C",text)==0){
+	if(strcmp("ON/CLR",text)==0){
 		free(buffer);
 		buffer = NULL;
 		gtk_entry_set_text(GTK_ENTRY(box), " ");
@@ -157,7 +157,7 @@ static void activate(GtkApplication *app, gpointer user_data){
 	widget.button[12] = gtk_button_new_with_label("-");
 	widget.button[13] = gtk_button_new_with_label("x");
 	widget.button[14] = gtk_button_new_with_label("÷");
-	widget.button[15] = gtk_button_new_with_label("C");
+	widget.button[15] = gtk_button_new_with_label("ON/CLR");
 	widget.button[16] = gtk_button_new_with_label("=");	
 	widget.button[17] = gtk_button_new_with_label("SHIFT");
 	widget.button[18] = gtk_button_new_with_label("ALPHA");
@@ -193,6 +193,11 @@ static void activate(GtkApplication *app, gpointer user_data){
 
 	//First Row
 	gtk_grid_attach(GTK_GRID(widget.grid),box,0,0,6,1);
+
+
+
+
+
 
 	//Second Row
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[17],0,1,1,1);
@@ -258,7 +263,10 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[44],3,9,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[16],4,9,1,1);	
 	
-	
+
+
+
+
 	//Each button onclick will go the getinput function
 
 
