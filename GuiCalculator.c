@@ -1,35 +1,26 @@
-//Creating a scientific calculator
-
-
 /*
+ * @file GuiCalulator.c
+ * @author Lascelle Mckenzie
+ * @date December 21, 2022
+ * @brief Creating a scientific calculator
 	Key functions to check over 
 	g_print("%s\n",equation);
-
 	GDK_BUTTON_PRESS
 	GDK_BUTTON_RELEASE
 	GDK_BUTTON_PRESS
 	GDK_2BUTTON_PRESS
 	GDK_BUTTON_RELEASE
-
 	gtk_label_set_text(GTK_LABEL(label[0]),"Wah gwan");
-	
 	view[0] = gtk_text_view_new(); 
 	view[1] = gtk_text_view_new();
-
-
 	gtk_widget_set_visible(label[2],false);
 	gtk_widget_set_visible(label[3],false);
-	
-
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(view[0]),false);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(view[1]),false);
-	
 	To Change Color of view
 	GdkRGBA text_color;
 	gdk_rgba_parse (&text_color, "white");
 	gtk_widget_override_color (box, GTK_STATE_FLAG_INSENSITIVE, &text_color);
-	
-	
 	gtk_widget_set_sensitive(GTK_WIDGET(view[0]),FALSE);
 	gtk_widget_set_sensitive(GTK_WIDGET(view[1]),FALSE);
 	
@@ -41,7 +32,6 @@
 	ᵅ ᵝ ᵞ ᵟ ᵋ ᶿ ᶥ ᶲ ᵠ ᵡ  
 	ᵦ ᵧ ᵨ ᵩ ᵪ   
 */
-
 
 #include<math.h> 
 #include<stddef.h>
@@ -61,10 +51,17 @@ typedef struct{
 GtkWidget *box;
 GtkWidget *label[4];
 GtkWidget *ButtonLabel[24];
+
 char *buffer = NULL;
 
 bool Is_Shift_Active;
+bool Is_Alpha_Active;
 
+/**
+ * @detail
+ * @param  equation 
+ * @return NULL 
+ */
 static void SplitEquation(char *equation){
 	for(size_t i=0;i<strlen(equation);i++){	
 		if(isdigit(equation[i])){
@@ -76,17 +73,27 @@ static void SplitEquation(char *equation){
 	}
 }
 
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
 static void AddToBuffer(const char *text){
 	if(buffer==NULL){
 		buffer = (char *) malloc (strlen(text));
 		strcpy (buffer, text);
 	}else{
-		buffer = (char *) realloc (buffer, ((strlen(buffer)) + (strlen(text)))); //buffer is reallocated with new size
+		buffer = (char *) realloc (buffer, ((strlen(buffer)) + (strlen(text)))); 	
 		strcat(buffer, text);
 	}
 	gtk_entry_set_text(GTK_ENTRY(box), buffer);
 }
 
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
 static void RemoveFromBuffer(){
 	if(buffer!=NULL){
 		buffer[strlen(buffer)-1] = '\0';
@@ -95,43 +102,81 @@ static void RemoveFromBuffer(){
 	}
 }
 
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
 static void ClearBuffer(){
 	free(buffer);
 	buffer = NULL;
 	gtk_entry_set_text(GTK_ENTRY(box), " ");
 }
 
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
 gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
 		
 	if(event->type == GDK_BUTTON_PRESS){
 		switch(Is_Shift_Active){
 			case true:
-				//HideShift();
 				gtk_widget_hide(label[2]);
 				Is_Shift_Active = false;
 				break;
 			case false:
-				//ShowShift();
-				gtk_widget_show(label[2]);
-				Is_Shift_Active = true;
+				if(!Is_Alpha_Active){
+					gtk_widget_show(label[2]);
+					Is_Shift_Active = true;
+				}
 				break;
 		}	
 	}	
 	return TRUE;
 }
 
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Alpha_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
+		
+	if(event->type == GDK_BUTTON_PRESS){
+		switch(Is_Alpha_Active){
+			case true:
+				gtk_widget_hide(label[3]);
+				Is_Alpha_Active = false;
+				break;
+			case false:
+				if(!Is_Shift_Active){
+					gtk_widget_show(label[3]);
+					Is_Alpha_Active = true;
+				}
+				break;
+		}	
+	}	
+	return TRUE;
+}
 
-
+/*Dynamically allocating the memory for the string
+ * First We get allocate the size of the buffer by using the size of the
+ * text of the button that was entered and the allocate it if the buffer is empty
+ * If the buffer is not empty then we reallocate space to the memory of the buffer by adding the 
+ * current size of the buffer to the current size of the preceeding text.
+ * If C is pressed the we free the memory and then set the buffer back to NULL
+ * and output an empty screen
+*/
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
 static void GetInput(GtkButton *button, gpointer data){
-	const gchar* text = gtk_button_get_label(button);
 
-	/*Dynamically allocating the memory for the string
-	First We get allocate the size of the buffer by using the size of the
-	text of the button that was entered and the allocate it if the buffer is empty
-	If the buffer is not empty then we reallocate space to the memory of the buffer by adding the 
-	current size of the buffer to the current size of the preceeding text.
-	If C is pressed the we free the memory and then set the buffer back to NULL
-	and output an empty screen*/	
+	const gchar* text = gtk_button_get_label(button);
 	if(strcmp("ON/CLR",text)==0 || strcmp("AC",text)==0){
 		ClearBuffer();
 	}
@@ -148,6 +193,11 @@ static void GetInput(GtkButton *button, gpointer data){
 	}
 }
 
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
 static void activate(GtkApplication *app, gpointer user_data){
 	calc widget;
 
@@ -338,9 +388,9 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[44],3,17,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[16],4,17,1,1);	
 
-
 	//Each button onclick will go the getinput function	
 	g_signal_connect(widget.button[17], "button-press-event", G_CALLBACK(Shift_Clicked), NULL);
+	g_signal_connect(widget.button[18], "button-press-event", G_CALLBACK(Alpha_Clicked), NULL);
 	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[2],"clicked",G_CALLBACK(GetInput), NULL);
@@ -358,7 +408,6 @@ static void activate(GtkApplication *app, gpointer user_data){
 	g_signal_connect(widget.button[14],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[15],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[16],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[18],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[19],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[20],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[21],"clicked",G_CALLBACK(GetInput), NULL);
@@ -386,13 +435,20 @@ static void activate(GtkApplication *app, gpointer user_data){
 	g_signal_connect(widget.button[43],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[44],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[45],"clicked",G_CALLBACK(GetInput), NULL);
-		
+
 	gtk_widget_show_all(widget.window);
 
 	gtk_widget_hide(label[2]);
+	gtk_widget_hide(label[3]);
 	Is_Shift_Active = false;
+	Is_Alpha_Active = false;
 }
 
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
 int main(int argc, char **argv){
 	GtkApplication *app;
 	gtk_init(&argc, &argv);
