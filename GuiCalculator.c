@@ -20,10 +20,9 @@ typedef struct{
 
 bool Is_Shift_Clicked = false;
 GtkWidget *box;
-GtkWidget *view[2];//Might use to display the answer and stuff
-GtkWidget *viewbuffer[2];
+GtkWidget *label[2];
+GtkWidget *ButtonLabel[24];
 char *buffer = NULL;
-
 
 //Return a string or pointer
 static void SplitEquation(char *equation){
@@ -51,8 +50,11 @@ static void AddToBuffer(const char *text){
 }
 
 static void RemoveFromBuffer(){
-	buffer[strlen(buffer)-1] = '\0';
-	gtk_entry_set_text(GTK_ENTRY(box), buffer);
+	if(buffer!=NULL){
+		buffer[strlen(buffer)-1] = '\0';
+		gtk_entry_set_text(GTK_ENTRY(box), buffer);
+
+	}
 }
 
 static void ClearBuffer(){
@@ -71,6 +73,9 @@ gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 	GDK_BUTTON_RELEASE
 	*/
 
+	gtk_widget_set_visible(label[0],false);
+	//gtk_label_set_text(GTK_LABEL(label[0]),"Wah gwan");
+	
 	if(event->type == GDK_BUTTON_PRESS){
 		g_print("Shift Clicked\n");		
 	}
@@ -112,19 +117,51 @@ static void activate(GtkApplication *app, gpointer user_data){
 	widget.window = gtk_application_window_new(app);
 	gtk_window_set_position(GTK_WINDOW(widget.window),GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(widget.window),"Scientific Calculator");
-	gtk_window_set_default_size(GTK_WINDOW(widget.window), 400, 320);
+	gtk_window_set_default_size(GTK_WINDOW(widget.window), 400, 500);
 	gtk_container_set_border_width(GTK_CONTAINER(widget.window),10);
 
 	widget.grid = gtk_grid_new();
 	gtk_container_add(GTK_CONTAINER(widget.window),widget.grid);
 	
-	view[0] = gtk_text_view_new(); 
-	view[1] = gtk_text_view_new(); 
+	//view[0] = gtk_text_view_new(); 
+	//view[1] = gtk_text_view_new(); 
 	box= gtk_entry_new();
+	label[0] = gtk_label_new ("quit");
+	label[1] = gtk_label_new ("0.");
+	
+
+	ButtonLabel[0] = gtk_label_new ("x!");
+	ButtonLabel[1] = gtk_label_new ("nPr");
+	ButtonLabel[2] = gtk_label_new ("Rec(  :");
+	ButtonLabel[3] = gtk_label_new ("∛");
+	ButtonLabel[4] = gtk_label_new ("d/c");
+	ButtonLabel[5] = gtk_label_new ("ˣ√");
+	ButtonLabel[6] = gtk_label_new ("10ˣ");
+	ButtonLabel[7] = gtk_label_new ("eˣ   e");
+	ButtonLabel[8] = gtk_label_new ("A");
+	ButtonLabel[9] = gtk_label_new ("B");
+	ButtonLabel[10] = gtk_label_new ("C");
+	ButtonLabel[11] = gtk_label_new ("sin⁻¹   D");
+	ButtonLabel[12] = gtk_label_new ("cos⁻¹   E");
+	ButtonLabel[13] = gtk_label_new ("tan⁻¹   F");
+	ButtonLabel[14] = gtk_label_new ("STO");
+	ButtonLabel[15] = gtk_label_new ("X");
+	ButtonLabel[16] = gtk_label_new ("Y");
+	ButtonLabel[17] = gtk_label_new ("M");
+	ButtonLabel[18] = gtk_label_new ("INS");
+	ButtonLabel[19] = gtk_label_new ("OFF");
+	ButtonLabel[20] = gtk_label_new ("Rnd");
+	ButtonLabel[21] = gtk_label_new ("Ran#");
+	ButtonLabel[22] = gtk_label_new ("π");
+	ButtonLabel[23] = gtk_label_new ("%");
+
+
+
+	//gtk_widget_set_visible(label[0],false);
 	
 	gtk_editable_set_editable(GTK_EDITABLE(box), FALSE);
-	gtk_text_view_set_editable(GTK_TEXT_VIEW(view[0]),false);
-	gtk_text_view_set_editable(GTK_TEXT_VIEW(view[1]),false);
+	//gtk_text_view_set_editable(GTK_TEXT_VIEW(view[0]),false);
+	//gtk_text_view_set_editable(GTK_TEXT_VIEW(view[1]),false);
 
 	//To Change Color of view
 	/*
@@ -132,8 +169,9 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gdk_rgba_parse (&text_color, "white");
 	gtk_widget_override_color (box, GTK_STATE_FLAG_INSENSITIVE, &text_color);
 	*/
-	gtk_widget_set_sensitive(GTK_WIDGET(view[0]),FALSE);
-	gtk_widget_set_sensitive(GTK_WIDGET(view[1]),FALSE);
+	
+	//gtk_widget_set_sensitive(GTK_WIDGET(view[0]),FALSE);
+	//gtk_widget_set_sensitive(GTK_WIDGET(view[1]),FALSE);
 	gtk_widget_set_sensitive(GTK_WIDGET(box),FALSE);
 
 
@@ -204,75 +242,131 @@ static void activate(GtkApplication *app, gpointer user_data){
 
 	/*  (X-Position, Y-Position, X-Span, Y-Span)  */
 
-	//First Row
-	gtk_grid_attach(GTK_GRID(widget.grid),view[0],0,0,6,1);
+	//First
+	gtk_grid_attach(GTK_GRID(widget.grid),label[0],0,0,6,1);
+	
+	//Second
 	gtk_grid_attach(GTK_GRID(widget.grid),box,0,1,6,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),view[1],0,2,6,1);
+	
+	//Third
+	gtk_grid_attach(GTK_GRID(widget.grid),label[1],4,2,2,1);
 
-	//Second Row
+	//Fourth
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[17],0,3,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[18],1,3,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[19],2,3,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[15],3,3,2,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[15],3,3,1,1);
 	
-	//Third Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[20],0,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[21],1,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[22],2,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[23],3,4,2,1);
-
-	//Fourth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[24],0,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[25],1,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[26],2,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[27],3,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[28],4,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[29],5,4,1,1);
-
-	//Fifth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[30],0,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[31],1,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[32],2,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[33],3,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[34],4,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[35],5,5,1,1);
+	//Fifth
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[0],0,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[1],1,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[2],2,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[3],3,4,1,1);
+		
 
 	//Sixth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[36],0,6,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[37],1,6,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[38],2,6,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[39],3,6,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[40],4,6,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[41],5,6,1,1);
-
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[20],0,5,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[21],1,5,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[22],2,5,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[23],3,5,1,1);
+	
 	//Seventh Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[7],0,7,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[8],1,7,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[9],2,7,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[42],3,7,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[43],4,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[4],0,6,1,1);
+	//gtk_grid_attach(GTK_GRID(widget.grid)," ",1,4,1,1);
+	//gtk_grid_attach(GTK_GRID(widget.grid)," ",2,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[5],3,6,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[6],4,6,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[7],5,6,1,1);
+
 
 	//Eigth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[4],0,8,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[5],1,8,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[6],2,8,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[13],3,8,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[14],4,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[24],0,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[25],1,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[26],2,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[27],3,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[28],4,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[29],5,7,1,1);
 
 	//Ninth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[1],0,9,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[2],1,9,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[3],2,9,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[11],3,9,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[12],4,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[8],0,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[9],1,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[10],2,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[11],3,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[12],4,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[13],5,8,1,1);
 
 	//Tenth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[0],0,10,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[10],1,10,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[45],2,10,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[44],3,10,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[16],4,10,1,1);	
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[30],0,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[31],1,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[32],2,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[33],3,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[34],4,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[35],5,9,1,1);
+
+	//Eleventh Row
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[14],0,10,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[15],3,10,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[16],4,10,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[17],5,10,1,1);	
+
+	//Twelveth Row 
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[36],0,11,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[37],1,11,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[38],2,11,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[39],3,11,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[40],4,11,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[41],5,11,1,1);
+
 	
+	//Thirteenth Row
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[18],3,12,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[19],4,12,1,1);
+
+	//Fourteenth Row
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[7],0,13,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[8],1,13,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[9],2,13,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[42],3,13,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[43],4,13,1,1);
+
+	//Fifteenth Row
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[4],0,14,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[5],1,14,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[6],2,14,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[13],3,14,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[14],4,14,1,1);
+
+
+	//Sixteenth Row
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[1],0,15,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[2],1,15,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[3],2,15,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[11],3,15,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[12],4,15,1,1);
+
+	//Seventeenth Row
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[20],0,16,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[21],1,16,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[22],2,16,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),ButtonLabel[23],4,16,1,1);
+
+	
+	//Eighteenth Row
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[0],0,17,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[10],1,17,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[45],2,17,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[44],3,17,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[16],4,17,1,1);	
+	
+
+
+
+
+
+
+
+
+
 	//Each button onclick will go the getinput function	
 	g_signal_connect(widget.button[17], "button-press-event", G_CALLBACK(Shift_Clicked), NULL);
 
