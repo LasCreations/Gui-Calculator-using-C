@@ -131,6 +131,12 @@ gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 					gtk_widget_show(label[2]);
 					Is_Shift_Active = true;
 				}
+				if(Is_Alpha_Active){	
+					gtk_widget_hide(label[3]);
+					Is_Alpha_Active = false;
+					gtk_widget_show(label[2]);
+					Is_Shift_Active = true;
+				}
 				break;
 		}	
 	}	
@@ -152,6 +158,12 @@ gboolean Alpha_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 				break;
 			case false:
 				if(!Is_Shift_Active){
+					gtk_widget_show(label[3]);
+					Is_Alpha_Active = true;
+				}
+				if(Is_Shift_Active){
+					gtk_widget_hide(label[2]);
+					Is_Shift_Active = false;
 					gtk_widget_show(label[3]);
 					Is_Alpha_Active = true;
 				}
