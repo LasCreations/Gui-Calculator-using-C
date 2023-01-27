@@ -19,19 +19,15 @@ typedef struct{
 
 
 bool Is_Shift_Clicked = false;
-
 GtkWidget *box;
-
+GtkWidget *view[2];//Might use to display the answer and stuff
+GtkWidget *viewbuffer[2];
 char *buffer = NULL;
 
 
 //Return a string or pointer
 static void SplitEquation(char *equation){
 	//g_print("%s\n",equation);
-		
-
-
-
 	for(size_t i=0;i<strlen(equation);i++){
 		
 		if(isdigit(equation[i])){
@@ -43,33 +39,45 @@ static void SplitEquation(char *equation){
 	}
 }
 
-/*
- GDK_BUTTON_PRESS
+static void AddToBuffer(const char *text){
+	if(buffer==NULL){
+		buffer = (char *) malloc (strlen(text));
+		strcpy (buffer, text);
+	}else{
+		buffer = (char *) realloc (buffer, ((strlen(buffer)) + (strlen(text)))); //buffer is reallocated with new size
+		strcat(buffer, text);
+	}
+	gtk_entry_set_text(GTK_ENTRY(box), buffer);
+}
 
-GDK_BUTTON_RELEASE
+static void RemoveFromBuffer(){
+	buffer[strlen(buffer)-1] = '\0';
+	gtk_entry_set_text(GTK_ENTRY(box), buffer);
+}
 
-GDK_BUTTON_PRESS
+static void ClearBuffer(){
+	free(buffer);
+	buffer = NULL;
+	gtk_entry_set_text(GTK_ENTRY(box), " ");
+}
 
-GDK_2BUTTON_PRESS
 
-GDK_BUTTON_RELEASE
+gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
+	/*
+	GDK_BUTTON_PRESS
+	GDK_BUTTON_RELEASE
+	GDK_BUTTON_PRESS
+	GDK_2BUTTON_PRESS
+	GDK_BUTTON_RELEASE
+	*/
 
-*/
-
-gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
-	
-	if(event->type == GDK_BUTTON_PRESS)
-		printf("Pressed\n");
-	
+	if(event->type == GDK_BUTTON_PRESS){
+		g_print("Shift Clicked\n");		
+	}
 	return TRUE;
-}
-
-static void ShiftClicked(GtkButton *button, gpointer data){
-	Is_Shift_Clicked = true;
-}
+}	
 
 static void GetInput(GtkButton *button, gpointer data){
-	
 
 	const gchar* text = gtk_button_get_label(button);
 
@@ -81,29 +89,18 @@ static void GetInput(GtkButton *button, gpointer data){
 	If C is pressed the we free the memory and then set the buffer back to NULL
 	and output an empty screen*/
 	
-	if(strcmp("ON/CLR",text)==0){
-		free(buffer);
-		buffer = NULL;
-		gtk_entry_set_text(GTK_ENTRY(box), " ");
+	if(strcmp("ON/CLR",text)==0 || strcmp("AC",text)==0){
+		ClearBuffer();
 	}
 	else if(strcmp("=",text)==0){
 		SplitEquation(buffer);
 	}
 	else{
 		if(strcmp("DEL", text)==0){
-			buffer[strlen(buffer)-1] = '\0';
-			gtk_entry_set_text(GTK_ENTRY(box), buffer);
+			RemoveFromBuffer();
 		}
 		else{
-			if(buffer==NULL){
-				buffer = (char *) malloc (strlen(text));
-				strcpy (buffer, text);
-			}else{
-				buffer = (char *) realloc (buffer, ((strlen(buffer)) + (strlen(text)))); //buffer is reallocated with new size
-				strcat(buffer, text);
-			}
-			gtk_entry_set_text(GTK_ENTRY(box), buffer);
-
+			AddToBuffer(text);	
 		}
 	}
 }
@@ -120,9 +117,25 @@ static void activate(GtkApplication *app, gpointer user_data){
 
 	widget.grid = gtk_grid_new();
 	gtk_container_add(GTK_CONTAINER(widget.window),widget.grid);
-
-	box = gtk_entry_new();
+	
+	view[0] = gtk_text_view_new(); 
+	view[1] = gtk_text_view_new(); 
+	box= gtk_entry_new();
+	
 	gtk_editable_set_editable(GTK_EDITABLE(box), FALSE);
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(view[0]),false);
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(view[1]),false);
+
+	//To Change Color of view
+	/*
+	GdkRGBA text_color;
+	gdk_rgba_parse (&text_color, "white");
+	gtk_widget_override_color (box, GTK_STATE_FLAG_INSENSITIVE, &text_color);
+	*/
+	gtk_widget_set_sensitive(GTK_WIDGET(view[0]),FALSE);
+	gtk_widget_set_sensitive(GTK_WIDGET(view[1]),FALSE);
+	gtk_widget_set_sensitive(GTK_WIDGET(box),FALSE);
+
 
 	/*
 	⁰ ¹ ² ³ ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ ⁺ ⁻ ⁼ ⁽ ⁾  
@@ -192,86 +205,76 @@ static void activate(GtkApplication *app, gpointer user_data){
 	/*  (X-Position, Y-Position, X-Span, Y-Span)  */
 
 	//First Row
-	gtk_grid_attach(GTK_GRID(widget.grid),box,0,0,6,1);
-
-
-
-
-
+	gtk_grid_attach(GTK_GRID(widget.grid),view[0],0,0,6,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),box,0,1,6,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),view[1],0,2,6,1);
 
 	//Second Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[17],0,1,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[18],1,1,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[19],2,1,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[15],3,1,2,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[17],0,3,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[18],1,3,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[19],2,3,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[15],3,3,2,1);
 	
 	//Third Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[20],0,2,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[21],1,2,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[22],2,2,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[23],3,2,2,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[20],0,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[21],1,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[22],2,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[23],3,4,2,1);
 
 	//Fourth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[24],0,3,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[25],1,3,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[26],2,3,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[27],3,3,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[28],4,3,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[29],5,3,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[24],0,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[25],1,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[26],2,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[27],3,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[28],4,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[29],5,4,1,1);
 
 	//Fifth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[30],0,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[31],1,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[32],2,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[33],3,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[34],4,4,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[35],5,4,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[30],0,5,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[31],1,5,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[32],2,5,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[33],3,5,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[34],4,5,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[35],5,5,1,1);
 
 	//Sixth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[36],0,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[37],1,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[38],2,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[39],3,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[40],4,5,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[41],5,5,1,1);
-	
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[36],0,6,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[37],1,6,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[38],2,6,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[39],3,6,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[40],4,6,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[41],5,6,1,1);
+
 	//Seventh Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[7],0,6,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[8],1,6,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[9],2,6,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[42],3,6,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[43],4,6,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[7],0,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[8],1,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[9],2,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[42],3,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[43],4,7,1,1);
 
 	//Eigth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[4],0,7,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[5],1,7,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[6],2,7,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[13],3,7,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[14],4,7,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[4],0,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[5],1,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[6],2,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[13],3,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[14],4,8,1,1);
 
 	//Ninth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[1],0,8,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[2],1,8,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[3],2,8,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[11],3,8,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[12],4,8,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[1],0,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[2],1,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[3],2,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[11],3,9,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[12],4,9,1,1);
 
 	//Tenth Row
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[0],0,9,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[10],1,9,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[45],2,9,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[44],3,9,1,1);
-	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[16],4,9,1,1);	
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[0],0,10,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[10],1,10,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[45],2,10,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[44],3,10,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[16],4,10,1,1);	
 	
-
-
-
-
-	//Each button onclick will go the getinput function
-
-
-	
-	g_signal_connect(widget.button[17], "button-press-event", G_CALLBACK(clicked), NULL);
+	//Each button onclick will go the getinput function	
+	g_signal_connect(widget.button[17], "button-press-event", G_CALLBACK(Shift_Clicked), NULL);
 
 	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(GetInput), NULL);
@@ -290,7 +293,7 @@ static void activate(GtkApplication *app, gpointer user_data){
 	g_signal_connect(widget.button[14],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[15],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[16],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[17],"clicked",G_CALLBACK(GetInput), NULL);
+	//g_signal_connect(widget.button[17],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[18],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[19],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[20],"clicked",G_CALLBACK(GetInput), NULL);
