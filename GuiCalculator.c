@@ -59,7 +59,28 @@ bool Is_Alpha_Active;
 
 
 /*       BASIC MATH EQUATIONS       */
+static double Add(float x, float y){
+	g_print("\n%lf",x+y);
+	return x+y;
+}
 
+static double Subtract(float x, float y){
+	g_print("\n%lf",x-y);
+	return x-y;
+}
+
+static double Multiply(float x, float y){
+	g_print("\n%lf",x*y);
+	return x*y;
+}
+
+static double Divide(float x, float y){
+	g_print("\n%lf",x/y);
+	return x/y;
+}
+
+
+/*     MATHEMATIC FUNCTIONS      */
 static long double Power(int base, int exponent){
 	double x = pow(base, exponent);
 	g_print("%lf",x);
@@ -156,6 +177,12 @@ gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 	Factorial(7);
 	CubeRoot(8);
 	SquareRoot(9);
+	Add(1,2);
+	Subtract(10, 8);
+	Divide(4, 2);
+	Multiply(5, 10);
+
+
 	if(event->type == GDK_BUTTON_PRESS){
 		switch(Is_Shift_Active){
 			case true:
