@@ -57,6 +57,38 @@ char *buffer = NULL;
 bool Is_Shift_Active;
 bool Is_Alpha_Active;
 
+
+/*       BASIC MATH EQUATIONS       */
+
+static long double Power(int base, int exponent){
+	double x = pow(base, exponent);
+	g_print("%lf",x);
+	return x;	
+}
+
+static float Factorial(int num){
+	float factorial=1;
+	for(size_t i = 1; i<=num; i++){
+		factorial = factorial * i;	
+	}
+	g_print("\n%f", factorial);
+	return factorial;
+}
+
+static long double CubeRoot(double x){
+	double result;
+	result = cbrt(x);
+	g_print("\n%lf",result);
+	return result;
+}
+
+static long double SquareRoot(double x){
+	double result;
+	result = sqrt(x);
+	g_print("\n%lf",result);
+	return result;
+}
+
 /**
  * @detail
  * @param  equation 
@@ -120,6 +152,10 @@ static void ClearBuffer(){
  */
 gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
 		
+	Power(8, -1);
+	Factorial(7);
+	CubeRoot(8);
+	SquareRoot(9);
 	if(event->type == GDK_BUTTON_PRESS){
 		switch(Is_Shift_Active){
 			case true:
@@ -253,7 +289,6 @@ static void activate(GtkApplication *app, gpointer user_data){
 	ButtonLabel[21] = gtk_label_new ("Ran#");
 	ButtonLabel[22] = gtk_label_new ("π");
 	ButtonLabel[23] = gtk_label_new ("%");
-
 
 	gtk_editable_set_editable(GTK_EDITABLE(box), FALSE);
 	gtk_widget_set_sensitive(GTK_WIDGET(box),FALSE);
