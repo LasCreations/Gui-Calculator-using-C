@@ -51,14 +51,14 @@ typedef struct{
 }calc;
 
 GtkWidget *box;
-GtkWidget *label[4];
+GtkWidget *label[5];
 GtkWidget *ButtonLabel[24];
 
 char *buffer = NULL;
 
 bool Is_Shift_Active;
 bool Is_Alpha_Active;
-
+bool Is_Hyperbolic_Active;
 
 /*       BASIC MATH EQUATIONS       */
 static double Add(float x, float y){
@@ -94,7 +94,7 @@ static float Factorial(int num){
 	for(size_t i = 1; i<=num; i++){
 		factorial = factorial * i;	
 	}
-	g_print("\n%f", factorial);
+	//g_print("\n%f", factorial);
 	return factorial;
 }
 
@@ -151,6 +151,82 @@ static long double InverseTanFunc(double x){
 	return result;
 }
 
+
+static long double HyperbolicSinFunc(double x){
+	double result = sinh(x);
+	g_print("\n%lf", result);
+	return result;
+}
+
+static long double HyperbolicCosFunc(double x){
+	double result = cosh(x);
+	g_print("\n%lf", result);
+	return result;
+}
+
+static long double HyperbolicTanFunc(double x){
+	double result = tanh(x);
+	g_print("\n%lf", result);
+	return result;
+}
+
+static long double InverseHyperbolicSinFunc(double x){
+	double result = asinh(x);
+	g_print("\n%lf", result);
+	return result;
+}
+
+static long double InverseHyperbolicCosFunc(double x){
+	double result = acosh(x);
+	g_print("\n%lf", result);
+	return result;
+}
+
+static long double InverseHyperbolicTanFunc(double x){
+	double result = atanh(x);
+	g_print("\n%lf", result);
+	return result;
+}
+
+/*
+nCr is referred as the combination.
+nCr is the selection of r objects from a set of n objects,
+where the order of objects does not matter.
+
+nPr is referred as the permutation. 
+nPr is arrangement of 'r' objects from a set of 'n' objects,
+which should be in an order or sequence.
+*/
+
+/*
+The logic used to find nPr is as follows −
+result = factorial(n)/factorial(n-r);
+ */
+static long double nPrFunc(double N, double R){
+	if(N<R){
+		g_print("Math Error"); 
+		return 0;
+	}
+	double result = Factorial(N)/Factorial(N-R);
+	g_print("\n%lf", result);
+	return result;
+}
+
+/*
+The logic used to find nCr is as follows −
+result = factorial(n)/(factorial(r)*factorial(n-r));
+*/
+static long double nCrFunc(double N, double R){
+	if(N<R){
+		g_print("Math Error"); 
+		return 0;
+	}
+	double result = Factorial(N)/(Factorial(R) * Factorial(N-R));
+	g_print("\n%lf", result);
+	return result;
+}
+
+
 static long double RandomNumber(){
 	 srand((unsigned int) time(NULL));
 	 g_print("\n%.3f", ((float) rand() / (float)(RAND_MAX)));
@@ -162,10 +238,51 @@ static long double RandomNumber(){
  * @return NULL 
  */
 static void SplitEquation(char *equation){
-/*	
-	int *numPtr = NULL;
-	int numcount=0;
 	
+	int *numPtr = NULL;
+	char *charPtr = NULL;
+	int *NumSectionPtr = NULL;
+	int OperationCount, NumberCount = 0;
+
+	//Allocate size to pointers based on the length of the equation
+	numPtr = (int*) malloc(strlen(equation) * sizeof(int));
+	charPtr = (char *) malloc (strlen(equation));
+
+
+	//Loops through the equation
+	
+	// 7 + 3 + 7 --> Add to ptr Array
+	
+	//435 + 362 + 8392  --> Concat 
+	
+	for(size_t i=0;i<strlen(equation);i++){	
+		
+		if(isalpha(equation[i])){
+			//charPtr[OperationCount] = equation[i]; 
+			//OperationCount++;
+			//g_print("%c\n",equation[i]);
+		}
+
+		if(isdigit(equation[i])){
+			//numPtr[NumberCount] = equation[i] - '0'; //Convert char to int
+			//NumberCount++;
+			g_print("%c\n",equation[i]);
+		}
+
+	}
+
+/*	
+	for(size_t i=0;i < (sizeof(numPtr)/4) + 1;i++){
+
+	} 
+
+	for(size_t x = 0; x < strlen(charPtr); x++ ){
+		g_print("%c\n", charPtr[x]);
+	}
+
+*/
+
+/*
 	for(size_t i=0;i<strlen(equation);i++){	
 		if(isdigit(equation[i])){
 			numcount++;	
@@ -253,8 +370,18 @@ gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 	InverseCosFunc(0.3);
 	InverseTanFunc(10);
 	RandomNumber();
+	HyperbolicSinFunc(10);
+	HyperbolicCosFunc(10);
+	HyperbolicTanFunc(1);
+        InverseHyperbolicCosFunc(10);
+	InverseHyperbolicTanFunc(0.57);
+	InverseHyperbolicSinFunc(10);
+	nCrFunc(9, 5);
+	nPrFunc(6, 2);
 	*/
-
+	
+	nPrFunc(9, 6);
+	
 	if(event->type == GDK_BUTTON_PRESS){
 		switch(Is_Shift_Active){
 			case true:
@@ -302,6 +429,23 @@ gboolean Alpha_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 					gtk_widget_show(label[3]);
 					Is_Alpha_Active = true;
 				}
+				break;
+		}	
+	}	
+	return TRUE;
+}
+
+gboolean Hyperbolic_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
+		
+	if(event->type == GDK_BUTTON_PRESS){
+		switch(Is_Hyperbolic_Active){
+			case true:
+				gtk_widget_hide(label[4]);
+				Is_Hyperbolic_Active = false;
+				break;
+			case false:
+				gtk_widget_show(label[4]);
+				Is_Hyperbolic_Active = true;
 				break;
 		}	
 	}	
@@ -363,6 +507,7 @@ static void activate(GtkApplication *app, gpointer user_data){
 	label[1] = gtk_label_new ("0.");
 	label[2] = gtk_label_new ("🅂");
 	label[3] = gtk_label_new ("🄰");
+	label[4] = gtk_label_new ("hyp");
 
 	ButtonLabel[0] = gtk_label_new ("x!");
 	ButtonLabel[1] = gtk_label_new ("nPr");
@@ -444,6 +589,7 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_grid_attach(GTK_GRID(widget.grid),label[0],0,0,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),label[2],1,0,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),label[3],2,0,1,1);
+	gtk_grid_attach(GTK_GRID(widget.grid),label[4],3,0,1,1);
 	//Second Row
 	gtk_grid_attach(GTK_GRID(widget.grid),box,0,1,6,1);
 	//Third Row
@@ -537,6 +683,8 @@ static void activate(GtkApplication *app, gpointer user_data){
 	//Each button onclick will go the getinput function	
 	g_signal_connect(widget.button[17], "button-press-event", G_CALLBACK(Shift_Clicked), NULL);
 	g_signal_connect(widget.button[18], "button-press-event", G_CALLBACK(Alpha_Clicked), NULL);
+	g_signal_connect(widget.button[32], "button-press-event", G_CALLBACK(Hyperbolic_Clicked), NULL);
+	
 	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[2],"clicked",G_CALLBACK(GetInput), NULL);
@@ -567,7 +715,6 @@ static void activate(GtkApplication *app, gpointer user_data){
 	g_signal_connect(widget.button[29],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[30],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[31],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[32],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[33],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[34],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[35],"clicked",G_CALLBACK(GetInput), NULL);
@@ -586,8 +733,11 @@ static void activate(GtkApplication *app, gpointer user_data){
 
 	gtk_widget_hide(label[2]);
 	gtk_widget_hide(label[3]);
+	gtk_widget_hide(label[4]);
+
 	Is_Shift_Active = false;
 	Is_Alpha_Active = false;
+	Is_Hyperbolic_Active = false;
 }
 
 /**
