@@ -50,6 +50,7 @@ typedef struct{
 	GtkWidget *button[45];	
 }calc;
 
+
 GtkWidget *box;
 GtkWidget *label[5];
 GtkWidget *ButtonLabel[24];
@@ -188,6 +189,23 @@ static long double InverseHyperbolicTanFunc(double x){
 	return result;
 }
 
+static long double ExponentialFunc(double x){
+	double result = exp(x);
+	g_print("\n%lf", result);
+	return result;
+}
+
+static long double Pi(){
+	g_print("%lf", M_PI);	
+}
+
+//Natural logarithm
+static long double NaturalLogarithm(double x){
+	double result = log(x);
+	g_print("%lf", result);
+	return result;
+}
+
 /*
 nCr is referred as the combination.
 nCr is the selection of r objects from a set of n objects,
@@ -237,16 +255,32 @@ static long double RandomNumber(){
  * @param  equation 
  * @return NULL 
  */
+
+static int ConcatNumber(char *num, int size){
+	int new = atoi(num); 
+	
+	g_print("Size: %d\n\n", size);
+	g_print("Num: %d\n\n", new);
+	return new;
+}
+
+
 static void SplitEquation(char *equation){
 	
-	int *numPtr = NULL;
+	//int *numPtr = NULL;
+
+
+	int *NumSectionPtr = NULL; //Different number in the equations
+	char *numPtr = NULL;  //Used to concat multiple digit numbers
+	
 	char *charPtr = NULL;
-	int *NumSectionPtr = NULL;
-	int OperationCount, NumberCount = 0;
+
+	int OperationCount = 0, NumberCount = 0, digitCount = 0;
 
 	//Allocate size to pointers based on the length of the equation
-	numPtr = (int*) malloc(strlen(equation) * sizeof(int));
+	NumSectionPtr = (int*) malloc(strlen(equation) * sizeof(int));
 	charPtr = (char *) malloc (strlen(equation));
+	numPtr = (char *) malloc (strlen(equation));
 
 
 	//Loops through the equation
@@ -257,18 +291,38 @@ static void SplitEquation(char *equation){
 	
 	for(size_t i=0;i<strlen(equation);i++){	
 		
-		if(isalpha(equation[i])){
+		if(isdigit(equation[i])){
+			if(numPtr==NULL)
+				numPtr = (char *) malloc (strlen(equation));
+			
+			numPtr[digitCount] = equation[i];
+			digitCount++;
+			//numPtr[NumberCount] = equation[i] - '0'; //Convert char to int
+			//NumberCount++;
+			//g_print("%c\n",equation[i]);
+		}
+
+		if(isalpha(equation[i]) || i == (strlen(equation) - 1)){
+			if(numPtr!=NULL){
+				NumSectionPtr[NumberCount] = ConcatNumber(numPtr, digitCount);
+				NumberCount++;
+				digitCount = 0;
+				
+				free(numPtr);
+				numPtr = NULL;
+				//numPtr = (char *) realloc (numPtr, strlen(equation)); 	
+			}
+			
 			//charPtr[OperationCount] = equation[i]; 
 			//OperationCount++;
 			//g_print("%c\n",equation[i]);
 		}
 
-		if(isdigit(equation[i])){
-			//numPtr[NumberCount] = equation[i] - '0'; //Convert char to int
-			//NumberCount++;
-			g_print("%c\n",equation[i]);
-		}
+	}
 
+
+	for(size_t i=0; i<NumberCount; i++){
+		g_print("%d\n\n", NumSectionPtr[i]);
 	}
 
 /*	
@@ -377,11 +431,11 @@ gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 	InverseHyperbolicTanFunc(0.57);
 	InverseHyperbolicSinFunc(10);
 	nCrFunc(9, 5);
-	nPrFunc(6, 2);
+	nPrFunc(6, 2);	
+	ExponentialFunc(8);
+	NaturalLogarithm(9);
 	*/
-	
-	nPrFunc(9, 6);
-	
+
 	if(event->type == GDK_BUTTON_PRESS){
 		switch(Is_Shift_Active){
 			case true:
@@ -468,6 +522,11 @@ gboolean Hyperbolic_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer u
 static void GetInput(GtkButton *button, gpointer data){
 
 	const gchar* text = gtk_button_get_label(button);
+
+	if(Is_Shift_Active || strcmp("AC",text)==0){
+		
+	}
+
 	if(strcmp("ON/CLR",text)==0 || strcmp("AC",text)==0){
 		ClearBuffer();
 	}
@@ -484,6 +543,8 @@ static void GetInput(GtkButton *button, gpointer data){
 	}
 }
 
+
+
 /**
  * @detail
  * @param  text 
@@ -491,6 +552,7 @@ static void GetInput(GtkButton *button, gpointer data){
  */
 static void activate(GtkApplication *app, gpointer user_data){
 	calc widget;
+	
 
 	widget.window = gtk_application_window_new(app);
 	gtk_window_set_position(GTK_WINDOW(widget.window),GTK_WIN_POS_CENTER);
@@ -498,6 +560,7 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_window_set_default_size(GTK_WINDOW(widget.window), 400, 500);
 	gtk_container_set_border_width(GTK_CONTAINER(widget.window),10);
 
+	
 	widget.grid = gtk_grid_new();
 	gtk_container_add(GTK_CONTAINER(widget.window),widget.grid);
 
