@@ -257,49 +257,40 @@ static long double RandomNumber(){
  */
 
 static int ConcatNumber(char *num, int size){
-	int new = atoi(num); 
-	
-	g_print("Size: %d\n\n", size);
-	g_print("Num: %d\n\n", new);
+	int new = atoi(num); 	
 	return new;
 }
 
 
-static void SplitEquation(char *equation){
-	
-	//int *numPtr = NULL;
-
+static void SplitEquation(char *equation){	
 
 	int *NumSectionPtr = NULL; //Different number in the equations
-	char *numPtr = NULL;  //Used to concat multiple digit numbers
-	
-	char *charPtr = NULL;
-
-	int OperationCount = 0, NumberCount = 0, digitCount = 0;
+	char *numPtr = NULL, *charPtr = NULL, *operationPtr = NULL;
+	int NumberCount = 0, digitCount = 0, operationCount = 0;
+	double result = 0;
 
 	//Allocate size to pointers based on the length of the equation
 	NumSectionPtr = (int*) malloc(strlen(equation) * sizeof(int));
 	charPtr = (char *) malloc (strlen(equation));
-	numPtr = (char *) malloc (strlen(equation));
-
-
-	//Loops through the equation
+	operationPtr = (char *) malloc (strlen(equation));
+	numPtr = (char *) malloc (strlen(equation));	
 	
-	// 7 + 3 + 7 --> Add to ptr Array
-	
-	//435 + 362 + 8392  --> Concat 
-	
-	for(size_t i=0;i<strlen(equation);i++){	
-		
+	for(size_t i=0;i<strlen(equation);i++){		
 		if(isdigit(equation[i])){
 			if(numPtr==NULL)
-				numPtr = (char *) malloc (strlen(equation));
+				numPtr = (char *) malloc (strlen(equation)); //Allocate memory back to numPtr
 			
 			numPtr[digitCount] = equation[i];
 			digitCount++;
-			//numPtr[NumberCount] = equation[i] - '0'; //Convert char to int
-			//NumberCount++;
-			//g_print("%c\n",equation[i]);
+		}
+		
+		if(isalpha(equation[i])){
+			if(equation[i]==43){
+				g_print("YEAAA");
+			}
+			if(equation[i]==45){
+				g_print("\nPsst");
+			}
 		}
 
 		if(isalpha(equation[i]) || i == (strlen(equation) - 1)){
@@ -307,58 +298,21 @@ static void SplitEquation(char *equation){
 				NumSectionPtr[NumberCount] = ConcatNumber(numPtr, digitCount);
 				NumberCount++;
 				digitCount = 0;
-				
 				free(numPtr);
 				numPtr = NULL;
-				//numPtr = (char *) realloc (numPtr, strlen(equation)); 	
 			}
-			
-			//charPtr[OperationCount] = equation[i]; 
-			//OperationCount++;
-			//g_print("%c\n",equation[i]);
 		}
-
 	}
 
-
+	//char *LabelResult; 
+	//sprintf(LabelResult, "%d", result);
+	//gtk_label_set_text(GTK_LABEL(label[0]),LabelResult);
+	
+	g_print("Numbers:\n");
 	for(size_t i=0; i<NumberCount; i++){
-		g_print("%d\n\n", NumSectionPtr[i]);
-	}
-
-/*	
-	for(size_t i=0;i < (sizeof(numPtr)/4) + 1;i++){
-
-	} 
-
-	for(size_t x = 0; x < strlen(charPtr); x++ ){
-		g_print("%c\n", charPtr[x]);
-	}
-
-*/
-
-/*
-	for(size_t i=0;i<strlen(equation);i++){	
-		if(isdigit(equation[i])){
-			numcount++;	
-		}
-		else if(isalpha(equation[i])){
-
-
-
-		}
+		g_print("%d\n", NumSectionPtr[i]);
 	}
 	
-	numPtr = (int*) malloc(numcount * sizeof(int));
-
-	for(int i=0; i<numcount; i++)
-		numPtr[i] = equation[i] - '0'; //Convert a char to int
-	
-	for(size_t i=0;i < (sizeof(numPtr)/4) + 1;i++){  //Amount of elements in the thing
-		g_print("%d\n",numPtr[i]);
-	}
-
-	free(numPtr);
-*/
 }
 
 /**
