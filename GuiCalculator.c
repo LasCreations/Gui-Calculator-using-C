@@ -37,6 +37,8 @@
 #include<stddef.h>
 #include<stdint.h> 
 #include<stdlib.h>
+#include<stdio.h>
+#include<time.h>
 #include<string.h>
 #include<ctype.h>
 #include<stdbool.h>
@@ -110,20 +112,82 @@ static long double SquareRoot(double x){
 	return result;
 }
 
+/*       Trigonomitry       */
+static long double SinFunc(int x){
+
+	double result = sin(x);
+	g_print("\n%lf",result);
+	return result;
+}
+
+static long double InverseSinFunc(double x){
+
+	double result = asin(x);
+	g_print("\n%lf",result);
+	return result;
+}
+
+static long double CosFunc(double x){
+	double result = cos(x);
+	g_print("\n%lf",result);
+	return result;
+}
+
+static long double InverseCosFunc(double x){
+	double result = acos(x);
+	g_print("\n%lf",result);
+	return result;
+}
+
+static long double TanFunc(double x){
+	double result = tan(x);
+	g_print("\n%lf",result);
+	return result;
+}
+
+static long double InverseTanFunc(double x){
+	double result = atan(x);
+	g_print("\n%lf",result);
+	return result;
+}
+
+static long double RandomNumber(){
+	 srand((unsigned int) time(NULL));
+	 g_print("\n%.3f", ((float) rand() / (float)(RAND_MAX)));
+}
+
 /**
  * @detail
  * @param  equation 
  * @return NULL 
  */
 static void SplitEquation(char *equation){
+/*	
+	int *numPtr = NULL;
+	int numcount=0;
+	
 	for(size_t i=0;i<strlen(equation);i++){	
 		if(isdigit(equation[i])){
-		
+			numcount++;	
 		}
 		else if(isalpha(equation[i])){
 
+
+
 		}
 	}
+	
+	numPtr = (int*) malloc(numcount * sizeof(int));
+
+	for(int i=0; i<numcount; i++)
+		numPtr[i] = equation[i] - '0'; //Convert a char to int
+	
+	for(size_t i=0;i < (sizeof(numPtr)/4) + 1;i++){  //Amount of elements in the thing
+		g_print("%d\n",numPtr[i]);
+	}
+
+	free(numPtr);
+*/
 }
 
 /**
@@ -147,11 +211,11 @@ static void AddToBuffer(const char *text){
  * @param  text 
  * @return NULL 
  */
+
 static void RemoveFromBuffer(){
 	if(buffer!=NULL){
 		buffer[strlen(buffer)-1] = '\0';
 		gtk_entry_set_text(GTK_ENTRY(box), buffer);
-
 	}
 }
 
@@ -173,6 +237,7 @@ static void ClearBuffer(){
  */
 gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
 		
+	/*
 	Power(8, -1);
 	Factorial(7);
 	CubeRoot(8);
@@ -181,7 +246,14 @@ gboolean Shift_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 	Subtract(10, 8);
 	Divide(4, 2);
 	Multiply(5, 10);
-
+	SinFunc(10);
+	CosFunc(10);
+	TanFunc(10);
+	InverseSinFunc(0.2);
+	InverseCosFunc(0.3);
+	InverseTanFunc(10);
+	RandomNumber();
+	*/
 
 	if(event->type == GDK_BUTTON_PRESS){
 		switch(Is_Shift_Active){
