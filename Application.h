@@ -1,0 +1,94 @@
+#include<gtk/gtk.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+
+
+typedef struct{
+	GtkWidget *window;
+	GtkWidget *grid;
+	GtkWidget *button[45];	
+}calc;
+
+
+calc widget; 
+
+GtkWidget *box;
+GtkWidget *label[5];
+GtkWidget *ButtonLabel[24];
+
+bool Is_Shift_Active;
+bool Is_Alpha_Active;
+bool Is_Hyperbolic_Active;
+
+char *buffer = NULL;
+
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+static void activate(GtkApplication*, gpointer);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Shift_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Alpha_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Hyperbolic_Clicked(GtkWidget*, GdkEventButton*, gpointer);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+static void Delete_Clicked(GtkWidget*, GdkEventButton*, gpointer);
+
+/**
+ * @detail Dynamically allocating the memory for the string
+ * First We get allocate the size of the buffer by using the size of the
+ * text of the button that was entered and the allocate it if the buffer is empty
+ * If the buffer is not empty then we reallocate space to the memory of the buffer by adding the 
+ * current size of the buffer to the current size of the preceeding text.
+ * If C is pressed the we free the memory and then set the buffer back to NULL
+ * and output an empty screen
+ * @param  text 
+ * @return NULL 
+ */
+static void AddToBuffer(const char *text);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+static void ClearBuffer();
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+static void RemoveFromBuffer();
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+static void GetInput(GtkButton *button, gpointer data);

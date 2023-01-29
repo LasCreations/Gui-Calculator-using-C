@@ -34,34 +34,8 @@
 */
 
 #include "Function.h"
+#include "Application.h"
 
-typedef struct{
-	GtkWidget *window;
-	GtkWidget *grid;
-	GtkWidget *button[45];	
-}calc;
-
-
-GtkWidget *box;
-GtkWidget *label[5];
-GtkWidget *ButtonLabel[24];
-
-char *buffer = NULL;
-
-static void GetInput(GtkButton*, gpointer);
-
-
-bool Is_Shift_Active;
-bool Is_Alpha_Active;
-bool Is_Hyperbolic_Active;
-
-
-
-/**
- * @detail
- * @param  equation 
- * @return NULL 
- */
 
 static int Change(char *num, int size){
 	int new = atoi(num); 	
@@ -123,11 +97,6 @@ static void SplitEquation(char *equation){
 	
 }
 
-/**
- * @detail
- * @param  text 
- * @return NULL 
- */
 static void AddToBuffer(const char *text){
 	if(buffer==NULL){
 		buffer = (char *) malloc (strlen(text));
@@ -139,12 +108,6 @@ static void AddToBuffer(const char *text){
 	gtk_entry_set_text(GTK_ENTRY(box), buffer);
 }
 
-/**
- * @detail
- * @param  text 
- * @return NULL 
- */
-
 static void RemoveFromBuffer(){
 	if(buffer!=NULL){
 		buffer[strlen(buffer)-1] = '\0';
@@ -152,22 +115,12 @@ static void RemoveFromBuffer(){
 	}
 }
 
-/**
- * @detail
- * @param  text 
- * @return NULL 
- */
 static void ClearBuffer(){
 	free(buffer);
 	buffer = NULL;
 	gtk_entry_set_text(GTK_ENTRY(box), " ");
 }
 
-/**
- * @detail
- * @param  text 
- * @return NULL 
- */
 gboolean Shift_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
 
 	const gchar* text = gtk_button_get_label(button);
@@ -225,11 +178,6 @@ gboolean Shift_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_d
 	return TRUE;
 }
 
-/**
- * @detail
- * @param  text 
- * @return NULL 
- */
 gboolean Alpha_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
 		
 	if(event->type == GDK_BUTTON_PRESS){
@@ -273,19 +221,6 @@ gboolean Hyperbolic_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer u
 	return TRUE;
 }
 
-/*Dynamically allocating the memory for the string
- * First We get allocate the size of the buffer by using the size of the
- * text of the button that was entered and the allocate it if the buffer is empty
- * If the buffer is not empty then we reallocate space to the memory of the buffer by adding the 
- * current size of the buffer to the current size of the preceeding text.
- * If C is pressed the we free the memory and then set the buffer back to NULL
- * and output an empty screen
-*/
-/**
- * @detail
- * @param  text 
- * @return NULL 
- */
 static void GetInput(GtkButton *button, gpointer data){
 
 	const gchar* text = gtk_button_get_label(button);
@@ -310,11 +245,6 @@ static void GetInput(GtkButton *button, gpointer data){
 	}
 }
 
-/**
- * @detail
- * @param  text 
- * @return NULL 
- */
 static void activate(GtkApplication *app, gpointer user_data){
 	calc widget;
 	
@@ -568,11 +498,6 @@ static void activate(GtkApplication *app, gpointer user_data){
 	Is_Hyperbolic_Active = false;
 }
 
-/**
- * @detail
- * @param  text 
- * @return NULL 
- */
 int main(int argc, char **argv){
 	GtkApplication *app;
 	gtk_init(&argc, &argv);
@@ -583,3 +508,5 @@ int main(int argc, char **argv){
 	g_object_unref(app);
 	return status;
 }
+
+
