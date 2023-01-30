@@ -36,12 +36,10 @@
 #include "Function.h"
 #include "Application.h"
 
-
 static int Change(char *num, int size){
 	int new = atoi(num); 	
 	return new;
 }
-
 
 static void SplitEquation(char *equation){	
 
@@ -121,12 +119,53 @@ static void ClearBuffer(){
 	gtk_entry_set_text(GTK_ENTRY(box), " ");
 }
 
-gboolean Shift_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+gboolean X_To_Neg_1_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Shift_Active){
+		AddToBuffer("!");
+	}else{
+		AddToBuffer("⁻¹");
+	}
+}
 
-	const gchar* text = gtk_button_get_label(button);
-	g_print("%s", text);
+gboolean Computations_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Shift_Active){
+		AddToBuffer("P");
+	}else{
+		AddToBuffer("C");
+	}
+}
+
+gboolean Polar_Coordinates_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Shift_Active){
+		AddToBuffer("Rec(");
+	}
+	else if(Is_Alpha_Active){
+		AddToBuffer(":");
+	}else{
+		AddToBuffer("Pol(");
+	}
+}
+
+gboolean Cube_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Shift_Active){
+		AddToBuffer("³√");
+	}else{
+		AddToBuffer("³");
+	}
+}
+
+gboolean Fraction_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Shift_Active){
+		//AddToBuffer("");
+	}else{
+		AddToBuffer("/");
+	}
+}
+
+gboolean Shift_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){	
+	//const gchar* text = gtk_button_get_label(button);
+	//g_print("%s", text);
 	
-	GetInput(button,user_data);
 /*	
 	Power(8, -1);
 	Factorial(7);
@@ -154,7 +193,6 @@ gboolean Shift_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_d
 	ExponentialFunc(8);
 	NaturalLogarithm(9);
 */	
-
 	if(event->type == GDK_BUTTON_PRESS){
 		switch(Is_Shift_Active){
 			case true:
@@ -175,6 +213,9 @@ gboolean Shift_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_d
 				break;
 		}	
 	}	
+
+	//GetInput(button,user_data);
+
 	return TRUE;
 }
 
@@ -191,9 +232,13 @@ gboolean Alpha_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 					gtk_widget_show(label[3]);
 					Is_Alpha_Active = true;
 				}
-				if(Is_Shift_Active){
+				if(Is_Shift_Active || Is_Hyperbolic_Active){
 					gtk_widget_hide(label[2]);
 					Is_Shift_Active = false;
+
+					gtk_widget_hide(label[4]);
+					Is_Hyperbolic_Active = false;
+
 					gtk_widget_show(label[3]);
 					Is_Alpha_Active = true;
 				}
@@ -213,8 +258,17 @@ gboolean Hyperbolic_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer u
 				Is_Hyperbolic_Active = false;
 				break;
 			case false:
-				gtk_widget_show(label[4]);
-				Is_Hyperbolic_Active = true;
+				if(!Is_Alpha_Active){
+					gtk_widget_show(label[4]);
+					Is_Alpha_Active = true;
+				}
+				if(Is_Alpha_Active){
+					gtk_widget_hide(label[3]);
+					Is_Alpha_Active = false;
+
+					gtk_widget_show(label[4]);
+					Is_Hyperbolic_Active = true;
+				}
 				break;
 		}	
 	}	
@@ -222,9 +276,14 @@ gboolean Hyperbolic_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer u
 }
 
 static void GetInput(GtkButton *button, gpointer data){
-
 	const gchar* text = gtk_button_get_label(button);
 
+	if(Is_Shift_Active){
+	
+	}
+	else if(!Is_Shift_Active){
+	
+	}	
 	if(Is_Shift_Active || strcmp("AC",text)==0){
 		
 	}
@@ -247,7 +306,6 @@ static void GetInput(GtkButton *button, gpointer data){
 
 static void activate(GtkApplication *app, gpointer user_data){
 	calc widget;
-	
 
 	widget.window = gtk_application_window_new(app);
 	gtk_window_set_position(GTK_WINDOW(widget.window),GTK_WIN_POS_CENTER);
@@ -266,11 +324,14 @@ static void activate(GtkApplication *app, gpointer user_data){
 	label[2] = gtk_label_new ("🅂");
 	label[3] = gtk_label_new ("🄰");
 	label[4] = gtk_label_new ("hyp");
+	label[5] = gtk_label_new ("D");
+	label[6] = gtk_label_new ("R");
+	label[7] = gtk_label_new ("G");
 
 	ButtonLabel[0] = gtk_label_new ("x!");
 	ButtonLabel[1] = gtk_label_new ("nPr");
 	ButtonLabel[2] = gtk_label_new ("Rec(  :");
-	ButtonLabel[3] = gtk_label_new ("∛");
+	ButtonLabel[3] = gtk_label_new ("³√");  	
 	ButtonLabel[4] = gtk_label_new ("d/c");
 	ButtonLabel[5] = gtk_label_new ("ˣ√");
 	ButtonLabel[6] = gtk_label_new ("10ˣ");
@@ -348,6 +409,7 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_grid_attach(GTK_GRID(widget.grid),label[2],1,0,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),label[3],2,0,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),label[4],3,0,1,1);
+
 	//Second Row
 	gtk_grid_attach(GTK_GRID(widget.grid),box,0,1,6,1);
 	//Third Row
@@ -442,6 +504,11 @@ static void activate(GtkApplication *app, gpointer user_data){
 	g_signal_connect(widget.button[17], "button-press-event", G_CALLBACK(Shift_Clicked), NULL);
 	g_signal_connect(widget.button[18], "button-press-event", G_CALLBACK(Alpha_Clicked), NULL);
 	g_signal_connect(widget.button[32], "button-press-event", G_CALLBACK(Hyperbolic_Clicked), NULL);
+	g_signal_connect(widget.button[20], "button-press-event", G_CALLBACK(X_To_Neg_1_Clicked), NULL);
+	g_signal_connect(widget.button[21], "button-press-event", G_CALLBACK(Computations_Clicked), NULL);
+	g_signal_connect(widget.button[22], "button-press-event", G_CALLBACK(Polar_Coordinates_Clicked), NULL);
+	g_signal_connect(widget.button[23], "button-press-event", G_CALLBACK(Cube_Clicked), NULL);
+	g_signal_connect(widget.button[24], "button-press-event", G_CALLBACK(Fraction_Clicked), NULL);
 	
 	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(GetInput), NULL);
@@ -461,11 +528,6 @@ static void activate(GtkApplication *app, gpointer user_data){
 	g_signal_connect(widget.button[15],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[16],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[19],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[20],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[21],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[22],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[23],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[24],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[25],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[26],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[27],"clicked",G_CALLBACK(GetInput), NULL);

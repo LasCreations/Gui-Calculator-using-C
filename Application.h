@@ -11,15 +11,18 @@ typedef struct{
 }calc;
 
 
-calc widget; 
-
 GtkWidget *box;
-GtkWidget *label[5];
+GtkWidget *label[8];
 GtkWidget *ButtonLabel[24];
 
 bool Is_Shift_Active;
 bool Is_Alpha_Active;
 bool Is_Hyperbolic_Active;
+
+//Degree, Radian and Gradian mode
+bool Is_Radian_Active;
+bool Is_Degree_Active;
+bool Is_Gradian_Active;
 
 char *buffer = NULL;
 
@@ -92,3 +95,40 @@ static void RemoveFromBuffer();
  * @return NULL 
  */
 static void GetInput(GtkButton *button, gpointer data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean X_To_Neg_1_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Computations_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail (1) Rectangular Coordinates (Rec)
+           (2) Polar Coordinates (Pol
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Polar_Coordinates_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Cube_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Fraction_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
