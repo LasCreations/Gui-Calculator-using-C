@@ -12,7 +12,7 @@ typedef struct{
 
 
 GtkWidget *box;
-GtkWidget *label[8];
+GtkWidget *label[7];
 GtkWidget *ButtonLabel[24];
 
 bool Is_Shift_Active;
@@ -131,4 +131,32 @@ gboolean Cube_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_da
  * @return NULL 
  */
 gboolean Fraction_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean SquareRoot_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Squared_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Power_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Log_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
 
