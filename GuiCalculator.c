@@ -186,6 +186,76 @@ gboolean Log_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_dat
 	}
 }
 
+gboolean Natural_Log_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Shift_Active){
+		AddToBuffer("e");
+	}
+	else if(Is_Alpha_Active){
+		AddToBuffer("ℯ");
+	}else{	
+		AddToBuffer("ln");
+	}
+}
+
+gboolean Negative_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Alpha_Active){
+		AddToBuffer("A");
+	}else{
+		AddToBuffer("-");
+	}
+}
+
+
+gboolean Degree_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Alpha_Active){
+		AddToBuffer("B");
+	}else{
+		AddToBuffer("⁰");
+	}
+}
+
+gboolean Sine_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Hyperbolic_Active && !Is_Shift_Active){
+		AddToBuffer("sinh");
+	}else if(!Is_Hyperbolic_Active && Is_Shift_Active){
+		AddToBuffer("sin⁻¹");
+	}else if(Is_Hyperbolic_Active && Is_Shift_Active){
+		AddToBuffer("sinh⁻¹");
+	}else if(Is_Alpha_Active){
+		AddToBuffer("D");
+	}else{
+		AddToBuffer("sin");
+	}
+}
+
+ gboolean Cosine_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Hyperbolic_Active && !Is_Shift_Active){
+		AddToBuffer("cosh")	;
+	}else if(!Is_Hyperbolic_Active && Is_Shift_Active){
+		AddToBuffer("cos⁻¹");
+	}else if(Is_Hyperbolic_Active && Is_Shift_Active){
+		AddToBuffer("cosh⁻¹");
+	}else if(Is_Alpha_Active){
+		AddToBuffer("E");
+	}else{
+		AddToBuffer("cos");
+	}
+}
+
+gboolean Tan_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	if(Is_Hyperbolic_Active && !Is_Shift_Active){
+		AddToBuffer("tanh")	;
+	}else if(!Is_Hyperbolic_Active && Is_Shift_Active){
+		AddToBuffer("tan⁻¹");
+	}else if(Is_Hyperbolic_Active && Is_Shift_Active){
+		AddToBuffer("tanh⁻¹");
+	}else if(Is_Alpha_Active){
+		AddToBuffer("F");
+	}else{
+		AddToBuffer("tan");
+	}
+}
+
 gboolean Shift_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){	
 	//const gchar* text = gtk_button_get_label(button);
 	//g_print("%s", text);
@@ -541,6 +611,12 @@ static void activate(GtkApplication *app, gpointer user_data){
 	g_signal_connect(widget.button[26], "button-press-event", G_CALLBACK(Squared_Clicked), NULL);
 	g_signal_connect(widget.button[27], "button-press-event", G_CALLBACK(Power_Clicked), NULL);
 	g_signal_connect(widget.button[28], "button-press-event", G_CALLBACK(Log_Clicked), NULL);
+	g_signal_connect(widget.button[29], "button-press-event", G_CALLBACK(Natural_Log_Clicked), NULL);
+	g_signal_connect(widget.button[30], "button-press-event", G_CALLBACK(Negative_Clicked), NULL);
+	g_signal_connect(widget.button[31], "button-press-event", G_CALLBACK(Degree_Clicked), NULL);
+	g_signal_connect(widget.button[33], "button-press-event", G_CALLBACK(Sine_Clicked), NULL);
+	g_signal_connect(widget.button[34], "button-press-event", G_CALLBACK(Cosine_Clicked), NULL);
+	g_signal_connect(widget.button[35], "button-press-event", G_CALLBACK(Tan_Clicked), NULL);
 	
 	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(GetInput), NULL);
@@ -560,12 +636,6 @@ static void activate(GtkApplication *app, gpointer user_data){
 	g_signal_connect(widget.button[15],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[16],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[19],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[29],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[30],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[31],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[33],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[34],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[35],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[36],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[37],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[38],"clicked",G_CALLBACK(GetInput), NULL);

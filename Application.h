@@ -160,3 +160,46 @@ gboolean Power_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_d
  */
 gboolean Log_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
 
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Natural_Log_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Negative_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Degree_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ *
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Sine_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Cosine_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Tan_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
