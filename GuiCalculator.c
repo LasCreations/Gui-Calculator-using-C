@@ -30,7 +30,33 @@
 	ᴬ ᴮ ᴰ ᴱ ᴳ ᴴ ᴵ ᴶ ᴷ ᴸ ᴹ ᴺ ᴼ ᴾ ᴿ ᵀ ᵁ ⱽ ᵂ  
 	ₐ ₑ ₕ ᵢ ⱼ ₖ ₗ ₘ ₙ ₒ ₚ ᵣ ₛ ₜ ᵤ ᵥ ₓ 
 	ᵅ ᵝ ᵞ ᵟ ᵋ ᶿ ᶥ ᶲ ᵠ ᵡ  
-	ᵦ ᵧ ᵨ ᵩ ᵪ   
+	ᵦ ᵧ ᵨ ᵩ ᵪ  
+	
+	Power(8, -1);
+	Factorial(7);
+	CubeRoot(8);
+	SquareRoot(9);
+	Add(1,2);
+	Subtract(10, 8);
+	Divide(4, 2);
+	Multiply(5, 10);
+	SinFunc(10);
+	CosFunc(10);
+	TanFunc(10);
+	InverseSinFunc(0.2);
+	InverseCosFunc(0.3);
+	InverseTanFunc(10);
+	RandomNumber();
+	HyperbolicSinFunc(10);
+	HyperbolicCosFunc(10);
+	HyperbolicTanFunc(1);
+        InverseHyperbolicCosFunc(10);
+	InverseHyperbolicTanFunc(0.57);
+	InverseHyperbolicSinFunc(10);
+	nCrFunc(9, 5);
+	nPrFunc(6, 2);	
+	ExponentialFunc(8);
+	NaturalLogarithm(9);
 */
 
 #include "Function.h"
@@ -83,10 +109,6 @@ static void SplitEquation(char *equation){
 			}
 		}
 	}
-
-	//char *LabelResult; 
-	//sprintf(LabelResult, "%d", result);
-	//gtk_label_set_text(GTK_LABEL(label[0]),LabelResult);
 	
 	g_print("Numbers:\n");
 	for(size_t i=0; i<NumberCount; i++){
@@ -256,36 +278,21 @@ gboolean Tan_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_dat
 	}
 }
 
+gboolean Number_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+
+	AddToBuffer(gtk_button_get_label(button));
+}
+
+gboolean Delete_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){
+	RemoveFromBuffer();
+}
+
 gboolean Shift_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data){	
 	//const gchar* text = gtk_button_get_label(button);
 	//g_print("%s", text);
 	
 /*	
-	Power(8, -1);
-	Factorial(7);
-	CubeRoot(8);
-	SquareRoot(9);
-	Add(1,2);
-	Subtract(10, 8);
-	Divide(4, 2);
-	Multiply(5, 10);
-	SinFunc(10);
-	CosFunc(10);
-	TanFunc(10);
-	InverseSinFunc(0.2);
-	InverseCosFunc(0.3);
-	InverseTanFunc(10);
-	RandomNumber();
-	HyperbolicSinFunc(10);
-	HyperbolicCosFunc(10);
-	HyperbolicTanFunc(1);
-        InverseHyperbolicCosFunc(10);
-	InverseHyperbolicTanFunc(0.57);
-	InverseHyperbolicSinFunc(10);
-	nCrFunc(9, 5);
-	nPrFunc(6, 2);	
-	ExponentialFunc(8);
-	NaturalLogarithm(9);
+	
 */	
 	if(event->type == GDK_BUTTON_PRESS){
 		switch(Is_Shift_Active){
@@ -383,17 +390,17 @@ static void GetInput(GtkButton *button, gpointer data){
 	}
 
 	if(strcmp("ON/CLR",text)==0 || strcmp("AC",text)==0){
-		ClearBuffer();
+		//ClearBuffer();
 	}
 	else if(strcmp("=",text)==0){
-		SplitEquation(buffer);
+		//SplitEquation(buffer);
 	}
 	else{
 		if(strcmp("DEL", text)==0){
-			RemoveFromBuffer();
+			//RemoveFromBuffer();
 		}
 		else{
-			AddToBuffer(text);	
+			//AddToBuffer(text);	
 		}
 	}
 }
@@ -402,11 +409,11 @@ static void activate(GtkApplication *app, gpointer user_data){
 	calc widget;
 
 	widget.window = gtk_application_window_new(app);
+
 	gtk_window_set_position(GTK_WINDOW(widget.window),GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(widget.window),"Scientific Calculator");
 	gtk_window_set_default_size(GTK_WINDOW(widget.window), 400, 500);
 	gtk_container_set_border_width(GTK_CONTAINER(widget.window),10);
-
 	
 	widget.grid = gtk_grid_new();
 	gtk_container_add(GTK_CONTAINER(widget.window),widget.grid);
@@ -414,12 +421,9 @@ static void activate(GtkApplication *app, gpointer user_data){
 	box= gtk_entry_new();
 
 	label[0] = gtk_label_new ("0.");
-	
 	label[1] = gtk_label_new ("🅂");
 	label[2] = gtk_label_new ("🄰");
-
 	label[3] = gtk_label_new ("hyp");
-
 	label[4] = gtk_label_new ("D");
 	label[5] = gtk_label_new ("R");
 	label[6] = gtk_label_new ("G");
@@ -507,7 +511,6 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_grid_attach(GTK_GRID(widget.grid),label[4],3,0,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),label[5],4,0,1,1);
 	gtk_grid_attach(GTK_GRID(widget.grid),label[6],6,0,1,1);
-
 	//Second Row
 	gtk_grid_attach(GTK_GRID(widget.grid),box,0,1,6,1);
 	//Third Row
@@ -599,9 +602,26 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_grid_attach(GTK_GRID(widget.grid),widget.button[16],4,17,1,1);	
 
 	//Each button onclick will go the getinput function	
+	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[2],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[3],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[4],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[5],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[6],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[7],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[8],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[9],"clicked",G_CALLBACK(Number_Clicked), NULL);
+	g_signal_connect(widget.button[10],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[11],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[12],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[13],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[14],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[15],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[16],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[17], "button-press-event", G_CALLBACK(Shift_Clicked), NULL);
 	g_signal_connect(widget.button[18], "button-press-event", G_CALLBACK(Alpha_Clicked), NULL);
-	g_signal_connect(widget.button[32], "button-press-event", G_CALLBACK(Hyperbolic_Clicked), NULL);
+	g_signal_connect(widget.button[19],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[20], "button-press-event", G_CALLBACK(X_To_Neg_1_Clicked), NULL);
 	g_signal_connect(widget.button[21], "button-press-event", G_CALLBACK(Computations_Clicked), NULL);
 	g_signal_connect(widget.button[22], "button-press-event", G_CALLBACK(Polar_Coordinates_Clicked), NULL);
@@ -614,35 +634,17 @@ static void activate(GtkApplication *app, gpointer user_data){
 	g_signal_connect(widget.button[29], "button-press-event", G_CALLBACK(Natural_Log_Clicked), NULL);
 	g_signal_connect(widget.button[30], "button-press-event", G_CALLBACK(Negative_Clicked), NULL);
 	g_signal_connect(widget.button[31], "button-press-event", G_CALLBACK(Degree_Clicked), NULL);
+	g_signal_connect(widget.button[32], "button-press-event", G_CALLBACK(Hyperbolic_Clicked), NULL);
 	g_signal_connect(widget.button[33], "button-press-event", G_CALLBACK(Sine_Clicked), NULL);
 	g_signal_connect(widget.button[34], "button-press-event", G_CALLBACK(Cosine_Clicked), NULL);
 	g_signal_connect(widget.button[35], "button-press-event", G_CALLBACK(Tan_Clicked), NULL);
-	
-	g_signal_connect(widget.button[0],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[1],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[2],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[3],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[4],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[5],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[6],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[7],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[8],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[9],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[10],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[11],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[12],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[13],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[14],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[15],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[16],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[19],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[36],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[37],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[38],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[39],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[40],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[41],"clicked",G_CALLBACK(GetInput), NULL);
-	g_signal_connect(widget.button[42],"clicked",G_CALLBACK(GetInput), NULL);
+	g_signal_connect(widget.button[42],"clicked",G_CALLBACK(Delete_Clicked), NULL);
 	g_signal_connect(widget.button[43],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[44],"clicked",G_CALLBACK(GetInput), NULL);
 	g_signal_connect(widget.button[45],"clicked",G_CALLBACK(GetInput), NULL);

@@ -3,13 +3,11 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-
 typedef struct{
 	GtkWidget *window;
 	GtkWidget *grid;
 	GtkWidget *button[45];	
 }calc;
-
 
 GtkWidget *box;
 GtkWidget *label[7];
@@ -25,7 +23,6 @@ bool Is_Degree_Active;
 bool Is_Gradian_Active;
 
 char *buffer = NULL;
-
 
 /**
  * @detail
@@ -54,13 +51,6 @@ gboolean Alpha_Clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_d
  * @return NULL 
  */
 gboolean Hyperbolic_Clicked(GtkWidget*, GdkEventButton*, gpointer);
-
-/**
- * @detail
- * @param  text 
- * @return NULL 
- */
-static void Delete_Clicked(GtkWidget*, GdkEventButton*, gpointer);
 
 /**
  * @detail Dynamically allocating the memory for the string
@@ -202,4 +192,26 @@ gboolean Cosine_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_
  * @return NULL 
  */
 gboolean Tan_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+
+
+
+
+
+
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Number_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
+/**
+ * @detail
+ * @param  text 
+ * @return NULL 
+ */
+gboolean Delete_Clicked(GtkButton *button, GdkEventButton *event, gpointer user_data);
+
 
